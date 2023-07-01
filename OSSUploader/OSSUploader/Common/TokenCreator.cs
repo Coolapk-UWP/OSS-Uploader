@@ -1,12 +1,11 @@
 ﻿using CoolapkUWP.OSSUploader.Helpers;
-using CoolapkUWP.OSSUploader.Helpers;
 using System;
 using Windows.ApplicationModel;
 using Windows.Security.ExchangeActiveSyncProvisioning;
 
 namespace CoolapkUWP.OSSUploader.Common
 {
-    public class TokenCreater
+    public class TokenCreator
     {
         private static readonly string guid = Guid.NewGuid().ToString();
         private static readonly string aid = RandHexString(16);
@@ -18,7 +17,7 @@ namespace CoolapkUWP.OSSUploader.Common
 
         private readonly TokenVersions TokenVersion;
 
-        static TokenCreater()
+        static TokenCreator()
         {
             PackageVersion packageVersion = Package.Current.Id.Version;
             EasClientDeviceInformation deviceInfo = new EasClientDeviceInformation();
@@ -27,10 +26,7 @@ namespace CoolapkUWP.OSSUploader.Common
             DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"CoolapkUWP {packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}");
         }
 
-        public TokenCreater(TokenVersions version = TokenVersions.TokenV2)
-        {
-            TokenVersion = version;
-        }
+        public TokenCreator(TokenVersions version = TokenVersions.TokenV2) => TokenVersion = version;
 
         /// <summary>
         /// GetToken Generate a token with random device info
@@ -84,7 +80,7 @@ namespace CoolapkUWP.OSSUploader.Common
         }
 
         /// <summary>
-        /// CreateDeviceCode Generace your custom device code
+        /// CreateDeviceCode Generate your custom device code
         /// </summary>
         private static string CreateDeviceCode(string aid, string mac, string manufactor, string brand, string model, string buildNumber)
         {

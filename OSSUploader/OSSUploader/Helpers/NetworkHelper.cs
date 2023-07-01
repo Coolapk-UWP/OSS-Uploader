@@ -21,7 +21,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
         public static readonly HttpClientHandler ClientHandler;
         public static readonly HttpClient Client;
 
-        private static TokenCreater token;
+        private static TokenCreator token;
 
         static NetworkHelper()
         {
@@ -51,14 +51,14 @@ namespace CoolapkUWP.OSSUploader.Helpers
 
         public static void SetRequestHeaders(TokenVersions TokenVersion, UserAgent UserAgent, APIVersion CustomAPI)
         {
-            token = new TokenCreater(TokenVersion);
+            token = new TokenCreator(TokenVersion);
             Client.DefaultRequestHeaders.Clear();
             Client.DefaultRequestHeaders.Add("X-Sdk-Int", "30");
             Client.DefaultRequestHeaders.Add("X-Sdk-Locale", "zh-CN");
             Client.DefaultRequestHeaders.Add("X-App-Mode", "universal");
             Client.DefaultRequestHeaders.Add("X-App-Channel", "coolapk");
             Client.DefaultRequestHeaders.Add("X-App-Id", "com.coolapk.market");
-            Client.DefaultRequestHeaders.Add("X-App-Device", TokenCreater.DeviceCode);
+            Client.DefaultRequestHeaders.Add("X-App-Device", TokenCreator.DeviceCode);
             Client.DefaultRequestHeaders.Add("X-Dark-Mode", "0");
             Client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent.ToString());
             Client.DefaultRequestHeaders.UserAgent.ParseAdd($" {CustomAPI}");
