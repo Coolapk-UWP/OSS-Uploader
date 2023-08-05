@@ -123,4 +123,26 @@
   <data name="AppName" xml:space="preserve">
     <value>OSS 上傳擴展</value>
   </data>
+  <data name="DeviceFamilyFormat" xml:space="preserve">
+    <value>裝置類型：{0}</value>
+    <comment>{0} - 裝置類型</comment>
+  </data>
+  <data name="FrameworkFormat" xml:space="preserve">
+    <value>平臺框架：{0}</value>
+    <comment>{0} - 平臺框架</comment>
+  </data>
+  <data name="MessageDialogContent" xml:space="preserve">
+    <value>這是一個用於上傳圖片到阿裡雲 OSS 的擴展</value>
+  </data>
+  <data name="MessageDialogTitle" xml:space="preserve">
+    <value>這裡沒有什麼好看的</value>
+  </data>
+  <data name="OSArchitectureFormat" xml:space="preserve">
+    <value>系統架構：{0}</value>
+    <comment>{0} - 系統架構</comment>
+  </data>
+  <data name="OSPlatformFormat" xml:space="preserve">
+    <value>系統版本：{0}</value>
+    <comment>{0} - 系統版本</comment>
+  </data>
 </root>

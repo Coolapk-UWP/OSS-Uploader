@@ -123,4 +123,26 @@
   <data name="AppName" xml:space="preserve">
     <value>OSS Uploader</value>
   </data>
+  <data name="DeviceFamilyFormat" xml:space="preserve">
+    <value>Device Family: {0}</value>
+    <comment>{0} - Device Family</comment>
+  </data>
+  <data name="FrameworkFormat" xml:space="preserve">
+    <value>Framework: {0}</value>
+    <comment>{0} - Framework</comment>
+  </data>
+  <data name="MessageDialogContent" xml:space="preserve">
+    <value>It is an extension to upload images through Aliyun OSS.</value>
+  </data>
+  <data name="MessageDialogTitle" xml:space="preserve">
+    <value>There are nothing to show.</value>
+  </data>
+  <data name="OSArchitectureFormat" xml:space="preserve">
+    <value>Architecture: {0}</value>
+    <comment>{0} - Architecture</comment>
+  </data>
+  <data name="OSPlatformFormat" xml:space="preserve">
+    <value>OS Platform: {0}</value>
+    <comment>{0} - OS Platform</comment>
+  </data>
 </root>

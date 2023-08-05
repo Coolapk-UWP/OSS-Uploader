@@ -12,11 +12,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
         public static readonly Uri BaseUri = new Uri("https://api.coolapk.com");
         public static readonly Uri Base2Uri = new Uri("https://api2.coolapk.com");
         public static readonly Uri CoolapkUri = new Uri("https://www.coolapk.com");
-
-        public static readonly Uri ITHomeUri = new Uri("https://qapi.ithome.com");
-        public static readonly Uri DevUri = new Uri("https://developer.coolapk.com");
-        public static readonly Uri BilibiliUri = new Uri("https://api.vc.bilibili.com");
-
+        
         public const string LoginUri = "https://account.coolapk.com/auth/loginByCoolapk";
 
         public static Uri GetUri(UriType type, params object[] args)
@@ -30,14 +26,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             string u = string.Format(GetTemplate(type), args);
             return new Uri(BaseUri, u);
         }
-
-        public static Uri GetLinkUri(UriType type, params object[] args)
-        {
-            string u = string.Format(GetTemplate(type), args);
-            Uri BaseUri = BilibiliUri;
-            return new Uri(BaseUri, u);
-        }
-
+        
         private static string GetTemplate(UriType type)
         {
             switch (type)

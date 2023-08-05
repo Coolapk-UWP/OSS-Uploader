@@ -13,8 +13,6 @@ namespace CoolapkUWP.OSSUploader.Helpers
 {
     public static class RequestHelper
     {
-        private static readonly object locker = new object();
-
         public static async Task<(bool isSucceed, JToken result)> PostDataAsync(Uri uri, HttpContent content = null, bool isBackground = false)
         {
             string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground);
@@ -25,7 +23,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             {
                 return (false, null);
             }
-            if (!token.TryGetValue("data", out JToken data) && token.TryGetValue("message", out JToken message))
+            if (!token.TryGetValue("data", out JToken data) && token.TryGetValue("message", out JToken _))
             {
                 bool _isSucceed = token.TryGetValue("error", out JToken error) && error.ToObject<int>() == 0;
                 return (_isSucceed, token);
@@ -33,8 +31,8 @@ namespace CoolapkUWP.OSSUploader.Helpers
             else
             {
                 return data != null && !string.IsNullOrWhiteSpace(data.ToString())
-                    ? ((bool isSucceed, JToken result))(true, data)
-                    : ((bool isSucceed, JToken result))(token != null && !string.IsNullOrEmpty(token.ToString()), token);
+                    ? (true, data)
+                    : (token != null && !string.IsNullOrEmpty(token.ToString()), token);
             }
         }
 

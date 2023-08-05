@@ -123,4 +123,26 @@
   <data name="AppName" xml:space="preserve">
     <value>OSS 上传插件</value>
   </data>
+  <data name="DeviceFamilyFormat" xml:space="preserve">
+    <value>设备类型：{0}</value>
+    <comment>{0} - 设备类型</comment>
+  </data>
+  <data name="FrameworkFormat" xml:space="preserve">
+    <value>平台框架：{0}</value>
+    <comment>{0} - 平台框架</comment>
+  </data>
+  <data name="MessageDialogContent" xml:space="preserve">
+    <value>这是一个用于上传图片到阿里云 OSS 的插件</value>
+  </data>
+  <data name="MessageDialogTitle" xml:space="preserve">
+    <value>这里没有什么好看的</value>
+  </data>
+  <data name="OSArchitectureFormat" xml:space="preserve">
+    <value>系统架构：{0}</value>
+    <comment>{0} - 系统架构</comment>
+  </data>
+  <data name="OSPlatformFormat" xml:space="preserve">
+    <value>系统版本：{0}</value>
+    <comment>{0} - 系统版本</comment>
+  </data>
 </root>

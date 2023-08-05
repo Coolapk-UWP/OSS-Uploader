@@ -128,10 +128,6 @@ namespace CoolapkUWP.OSSUploader.Helpers
                 response = await Client.PostAsync(uri, content);
                 return await response.Content.ReadAsStringAsync();
             }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
             catch (Exception)
             {
                 return null;
@@ -144,10 +140,6 @@ namespace CoolapkUWP.OSSUploader.Helpers
             {
                 BeforeGetOrPost(coolapkCookies, uri, request);
                 return await Client.GetStreamAsync(uri);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
             }
             catch (Exception)
             {
@@ -162,10 +154,6 @@ namespace CoolapkUWP.OSSUploader.Helpers
                 BeforeGetOrPost(coolapkCookies, uri, request);
                 return await Client.GetStringAsync(uri);
             }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
             catch (Exception)
             {
                 return null;
@@ -177,34 +165,27 @@ namespace CoolapkUWP.OSSUploader.Helpers
     {
         public static Uri GetHost(Uri uri) => new Uri("https://" + uri.Host);
 
-        public static string ExpandShortUrl(this Uri ShortUrl)
+        public static Uri TryGetUri(this string url)
         {
-            string NativeUrl = null;
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(ShortUrl);
-            try { _ = req.HaveResponse; }
-            catch (WebException ex)
-            {
-                HttpWebResponse res = ex.Response as HttpWebResponse;
-                if (res.StatusCode == HttpStatusCode.Found)
-                { NativeUrl = res.Headers["Location"]; }
-            }
-            return NativeUrl ?? ShortUrl.ToString();
+            url.TryGetUri(out Uri uri);
+            return uri;
         }
 
-        public static Uri ValidateAndGetUri(this string url)
+        public static bool TryGetUri(this string url, out Uri uri)
         {
-            if (string.IsNullOrWhiteSpace(url)) { return null; }
-            Uri uri = null;
+            uri = default;
+            if (string.IsNullOrWhiteSpace(url)) { return false; }
             try
             {
                 uri = url.Contains("://") ? new Uri(url)
                     : url[0] == '/' ? new Uri(UriHelper.CoolapkUri, url)
                     : new Uri($"https://{url}");
+                return true;
             }
             catch (FormatException)
             {
+                return false;
             }
-            return uri;
         }
     }
 }

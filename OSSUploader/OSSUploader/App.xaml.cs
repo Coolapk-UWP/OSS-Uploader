@@ -5,11 +5,16 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
+using Windows.System.Profile;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
@@ -29,6 +34,11 @@ namespace CoolapkUWP.OSSUploader
             InitializeComponent();
             Suspending += OnSuspending;
             UnhandledException += Application_UnhandledException;
+            
+            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.FocusVisualKind", "Reveal"))
+            {
+                FocusVisualKind = AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox" ? FocusVisualKind.Reveal : FocusVisualKind.HighVisibility;
+            }
         }
 
         /// <summary>
@@ -36,14 +46,38 @@ namespace CoolapkUWP.OSSUploader
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            RegisterExceptionHandlingSynchronizationContext();
-            MessageDialog dialog = new MessageDialog("It is an extension to upload images through Aliyun OSS.")
+            EnsureMessageDialog(e);
+        }
+
+        /// <summary>
+        /// 当应用程序被除正常启动以外的某种方式激活时调用。
+        /// </summary>
+        /// <param name="e">事件的事件数据。</param>
+        protected override void OnActivated(IActivatedEventArgs e)
+        {
+            EnsureMessageDialog(e);
+            base.OnActivated(e);
+        }
+
+        private async void EnsureMessageDialog(IActivatedEventArgs e)
+        {
+            if (!_isLoad)
             {
-                Title = "There are nothing to show."
-            };
-            await dialog.ShowAsync();
+                RegisterExceptionHandlingSynchronizationContext();
+                _isLoad = true;
+            }
+
+            ResourceLoader _loader = ResourceLoader.GetForViewIndependentUse();
+            StringBuilder builder = new StringBuilder()
+                .AppendLine(_loader.GetString("MessageDialogContent"))
+                .AppendLine(string.Format(_loader.GetString("FrameworkFormat"), RuntimeInformation.FrameworkDescription))
+                .AppendLine(string.Format(_loader.GetString("DeviceFamilyFormat"), AnalyticsInfo.VersionInfo.DeviceFamily.Replace('.', ' ')))
+                .AppendLine(string.Format(_loader.GetString("OSPlatformFormat"), Environment.OSVersion.ToString()))
+                .Append(string.Format(_loader.GetString("OSArchitectureFormat"), RuntimeInformation.OSArchitecture));
+            MessageDialog dialog = new MessageDialog(builder.ToString(), _loader.GetString("MessageDialogTitle"));
+            _ = await dialog.ShowAsync();
             Exit();
         }
 
@@ -180,6 +214,7 @@ namespace CoolapkUWP.OSSUploader
             DefaultValueHandling = DefaultValueHandling.Ignore,
         };
 
+        private bool _isLoad = false;
         private bool _appServiceInitialized = false;
         private AppServiceConnection _appServiceConnection;
         private BackgroundTaskDeferral _appServiceDeferral;

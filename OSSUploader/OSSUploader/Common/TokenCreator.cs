@@ -23,7 +23,7 @@ namespace CoolapkUWP.OSSUploader.Common
             EasClientDeviceInformation deviceInfo = new EasClientDeviceInformation();
             SystemManufacturer = deviceInfo.SystemManufacturer;
             SystemProductName = deviceInfo.SystemProductName;
-            DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"CoolapkUWP {packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}");
+            DeviceCode = CreateDeviceCode(aid, mac, SystemManufacturer, SystemManufacturer, SystemProductName, $"OSSUploader {packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}");
         }
 
         public TokenCreator(TokenVersions version = TokenVersions.TokenV2) => TokenVersion = version;
