@@ -15,7 +15,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
     {
         public static async Task<(bool isSucceed, JToken result)> PostDataAsync(Uri uri, HttpContent content = null, bool isBackground = false)
         {
-            string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground);
+            string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground).ConfigureAwait(false);
             if (string.IsNullOrEmpty(json)) { return (false, null); }
             JObject token;
             try { token = JObject.Parse(json); }
@@ -25,7 +25,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             }
             if (!token.TryGetValue("data", out JToken data) && token.TryGetValue("message", out JToken _))
             {
-                bool _isSucceed = token.TryGetValue("error", out JToken error) && error.ToObject<int>() == 0;
+                bool _isSucceed = token.TryGetValue("error", out JToken error) && error.ToString() == "0";
                 return (_isSucceed, token);
             }
             else
@@ -36,32 +36,33 @@ namespace CoolapkUWP.OSSUploader.Helpers
             }
         }
 
-        public static async Task<List<string>> UploadImages(IEnumerable<UploadFileFragment> images)
+        public static async Task<IEnumerable<string>> UploadImages(IEnumerable<UploadFileFragment> images, string bucket, string dir, string uid)
         {
-            List<string> responses = new List<string>();
             using (MultipartFormDataContent content = new MultipartFormDataContent())
             {
                 string json = JsonConvert.SerializeObject(images, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-                using (StringContent uploadBucket = new StringContent("image"))
-                using (StringContent uploadDir = new StringContent("feed"))
+                using (StringContent uploadBucket = new StringContent(bucket))
+                using (StringContent uploadDir = new StringContent(dir))
                 using (StringContent is_anonymous = new StringContent("0"))
                 using (StringContent uploadFileList = new StringContent(json))
+                using (StringContent toUid = new StringContent(uid))
                 {
                     content.Add(uploadBucket, "uploadBucket");
                     content.Add(uploadDir, "uploadDir");
                     content.Add(is_anonymous, "is_anonymous");
                     content.Add(uploadFileList, "uploadFileList");
-                    (bool isSucceed, JToken result) = await PostDataAsync(UriHelper.GetUri(UriType.OOSUploadPrepare), content);
+                    content.Add(toUid, "toUid");
+                    (bool isSucceed, JToken result) = await PostDataAsync(UriHelper.GetOldUri(UriType.OOSUploadPrepare), content).ConfigureAwait(false);
                     if (isSucceed)
                     {
                         UploadPicturePrepareResult data = result.ToObject<UploadPicturePrepareResult>();
-                        foreach (UploadFileInfo info in data.FileInfo)
+                        return await Task.WhenAll(data.FileInfo.Select(async info =>
                         {
                             UploadFileFragment image = images.FirstOrDefault((x) => x.MD5 == info.MD5);
-                            if (image == null) { continue; }
+                            if (image == null) { return null; }
                             using (Stream stream = image.Bytes.GetStream())
                             {
-                                string response = await Task.Run(() => OSSUploadHelper.OssUpload(data.UploadPrepareInfo, info, stream, "image/png"));
+                                string response = await OSSUploadHelper.OssUploadAsync(data.UploadPrepareInfo, info, stream, "image/png");
                                 if (!string.IsNullOrEmpty(response))
                                 {
                                     try
@@ -71,20 +72,21 @@ namespace CoolapkUWP.OSSUploader.Helpers
                                             && ((JObject)value).TryGetValue("url", out JToken url)
                                             && !string.IsNullOrEmpty(url.ToString()))
                                         {
-                                            responses.Add(url.ToString());
+                                            return url.ToString();
                                         }
                                     }
                                     catch (Exception)
                                     {
-                                        continue;
+                                        return null;
                                     }
                                 }
                             }
-                        }
+                            return null;
+                        })).ContinueWith(x => x.Result.Where(y => !string.IsNullOrWhiteSpace(y))).ConfigureAwait(false);
                     }
                 }
             }
-            return responses;
+            return Array.Empty<string>();
         }
     }
 }

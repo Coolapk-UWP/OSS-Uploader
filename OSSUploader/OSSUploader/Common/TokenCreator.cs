@@ -9,7 +9,7 @@ namespace CoolapkUWP.OSSUploader.Common
     {
         private static readonly string guid = Guid.NewGuid().ToString();
         private static readonly string aid = RandHexString(16);
-        private static readonly string mac = RandMacAdress();
+        private static readonly string mac = RandMacAddress();
         private static readonly string SystemManufacturer;
         private static readonly string SystemProductName;
 
@@ -48,33 +48,33 @@ namespace CoolapkUWP.OSSUploader.Common
         /// </summary>
         private string GetTokenWithDeviceCode(string deviceCode)
         {
-            string timeStamp = DateTime.Now.ConvertDateTimeToUnixTimeStamp().ToString();
+            string timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
 
-            string base64TimeStamp = timeStamp.GetBase64(true);
+            string base64TimeStamp = timeStamp.GetBase64();
             string md5TimeStamp = timeStamp.GetMD5();
             string md5DeviceCode = deviceCode.GetMD5();
 
             string token = $"token://com.coolapk.market/dcf01e569c1e3db93a3d0fcf191a622c?{md5TimeStamp}${md5DeviceCode}&com.coolapk.market";
-            string base64Token = token.GetBase64(true);
+            string base64Token = token.GetBase64();
             string md5Base64Token = base64Token.GetMD5();
             string md5Token = token.GetMD5();
 
             string bcryptSalt = $"{$"$2y$10${base64TimeStamp}/{md5Token}".Substring(0, 31)}u";
-            string bcryptresult = BCrypt.Net.BCrypt.HashPassword(md5Base64Token, bcryptSalt);
+            string bcryptResult = BCrypt.Net.BCrypt.HashPassword(md5Base64Token, bcryptSalt);
 
-            string appToken = $"v2{bcryptresult.GetBase64(true)}";
+            string appToken = $"v2{bcryptResult.GetBase64()}";
 
             return appToken;
         }
 
         private static string GetCoolapkAppToken()
         {
-            double timeStamp = DateTime.Now.ConvertDateTimeToUnixTimeStamp();
+            long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             string hex_timeStamp = $"0x{Convert.ToString((int)timeStamp, 16)}";
             // 时间戳加密
             string md5_timeStamp = $"{timeStamp}".GetMD5();
             string token = $"token://com.coolapk.market/c67ef5943784d09750dcfbb31020f0ab?{md5_timeStamp}${guid}&com.coolapk.market";
-            string md5_token = token.GetBase64().GetMD5();
+            string md5_token = token.GetBase64(true).GetMD5();
             string appToken = $"{md5_token}{guid}{hex_timeStamp}";
             return appToken;
         }
@@ -82,24 +82,22 @@ namespace CoolapkUWP.OSSUploader.Common
         /// <summary>
         /// CreateDeviceCode Generate your custom device code
         /// </summary>
-        private static string CreateDeviceCode(string aid, string mac, string manufactor, string brand, string model, string buildNumber)
-        {
-            return $"{aid}; ; ; {mac}; {manufactor}; {brand}; {model}; {buildNumber}".GetBase64(true).Reverse();
-        }
+        private static string CreateDeviceCode(string aid, string mac, string manufactory, string brand, string model, string buildNumber) =>
+            $"{aid}; ; ; {mac}; {manufactory}; {brand}; {model}; {buildNumber}".GetBase64().Reverse();
 
-        private static string RandMacAdress()
+        private static string RandMacAddress()
         {
             Random rand = new Random();
-            string macAdress = string.Empty;
+            string macAddress = string.Empty;
             for (int i = 0; i < 6; i++)
             {
-                macAdress += rand.Next(256).ToString("x2");
+                macAddress += rand.Next(256).ToString("x2");
                 if (i != 5)
                 {
-                    macAdress += ":";
+                    macAddress += ":";
                 }
             }
-            return macAdress;
+            return macAddress;
         }
 
         private static string RandHexString(int n)
@@ -109,6 +107,8 @@ namespace CoolapkUWP.OSSUploader.Common
             rand.NextBytes(bytes);
             return BitConverter.ToString(bytes).ToUpperInvariant().Replace("-", "");
         }
+
+        public override string ToString() => GetToken();
     }
 
     public enum TokenVersions

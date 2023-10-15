@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Windows.ApplicationModel;
@@ -23,7 +24,7 @@ namespace CoolapkUWP.OSSUploader
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
-    sealed partial class App : Application
+    internal sealed partial class App : Application
     {
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -34,7 +35,7 @@ namespace CoolapkUWP.OSSUploader
             InitializeComponent();
             Suspending += OnSuspending;
             UnhandledException += Application_UnhandledException;
-            
+
             if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.FocusVisualKind", "Reveal"))
             {
                 FocusVisualKind = AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox" ? FocusVisualKind.Reveal : FocusVisualKind.HighVisibility;
@@ -150,20 +151,23 @@ namespace CoolapkUWP.OSSUploader
 
             try
             {
-                if (message.TryGetValue("UID", out var uid) && message.TryGetValue("UserName", out var username) && message.TryGetValue("Token", out var token))
+                if (message.TryGetValue("UID", out object uid) && message.TryGetValue("UserName", out object username) && message.TryGetValue("Token", out object token))
                 {
                     NetworkHelper.SetLoginCookie(uid.ToString(), username.ToString(), token.ToString());
                 }
 
-                if (message.TryGetValue("TokenVersion", out var TokenVersion) && message.TryGetValue("UserAgent", out var UserAgent) && message.TryGetValue("APIVersion", out var APIVersion))
+                if (message.TryGetValue("TokenVersion", out object TokenVersion) && message.TryGetValue("UserAgent", out object UserAgent) && message.TryGetValue("APIVersion", out object APIVersion))
                 {
                     NetworkHelper.SetRequestHeaders((TokenVersions)TokenVersion, JsonConvert.DeserializeObject<UserAgent>(UserAgent.ToString(), jSetting), JsonConvert.DeserializeObject<APIVersion>(APIVersion.ToString(), jSetting));
                 }
 
-                if (message.TryGetValue("Images", out var images))
+                if (message.TryGetValue("Images", out object images))
                 {
+                    string uploadBucket = message.TryGetValue("UploadBucket", out object UploadBucket) ? UploadBucket.ToString() : "image";
+                    string uploadDir = message.TryGetValue("UploadDir", out object UploadDir) ? UploadDir.ToString() : "feed";
+                    string toUid = message.TryGetValue("ToUid", out object ToUid) ? ToUid.ToString() : string.Empty;
                     IEnumerable<UploadFileFragment> fragments = JsonConvert.DeserializeObject<IEnumerable<UploadFileFragment>>(images.ToString(), new JsonSerializerSettings { ContractResolver = new IgnoreIgnoredContractResolver() });
-                    returnMessage["Result"] = (await RequestHelper.UploadImages(fragments)).ToArray();
+                    returnMessage["Result"] = await RequestHelper.UploadImages(fragments, uploadBucket, uploadDir, toUid).ContinueWith(x => x.Result.ToArray());
                 }
             }
             catch (Exception ex)

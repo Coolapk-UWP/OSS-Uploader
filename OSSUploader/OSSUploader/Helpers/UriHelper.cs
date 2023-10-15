@@ -12,7 +12,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
         public static readonly Uri BaseUri = new Uri("https://api.coolapk.com");
         public static readonly Uri Base2Uri = new Uri("https://api2.coolapk.com");
         public static readonly Uri CoolapkUri = new Uri("https://www.coolapk.com");
-        
+
         public const string LoginUri = "https://account.coolapk.com/auth/loginByCoolapk";
 
         public static Uri GetUri(UriType type, params object[] args)
@@ -26,7 +26,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             string u = string.Format(GetTemplate(type), args);
             return new Uri(BaseUri, u);
         }
-        
+
         private static string GetTemplate(UriType type)
         {
             switch (type)

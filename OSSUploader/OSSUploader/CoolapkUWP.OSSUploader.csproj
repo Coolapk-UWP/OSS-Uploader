@@ -125,7 +125,6 @@
     <Compile Include="Common\ExceptionHandling.cs" />
     <Compile Include="Common\TokenCreator.cs" />
     <Compile Include="Helpers\DataHelper.cs" />
-    <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\NetworkHelper.cs" />
     <Compile Include="Helpers\OSSUploadHelper.cs" />
     <Compile Include="Helpers\RequestHelper.cs" />

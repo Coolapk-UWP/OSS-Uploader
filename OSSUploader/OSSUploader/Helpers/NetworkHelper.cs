@@ -12,7 +12,6 @@ using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using HttpClient = System.Net.Http.HttpClient;
 using HttpResponseMessage = System.Net.Http.HttpResponseMessage;
-using HttpStatusCode = System.Net.HttpStatusCode;
 
 namespace CoolapkUWP.OSSUploader.Helpers
 {
@@ -125,8 +124,8 @@ namespace CoolapkUWP.OSSUploader.Helpers
             {
                 HttpResponseMessage response;
                 BeforeGetOrPost(coolapkCookies, uri, "XMLHttpRequest");
-                response = await Client.PostAsync(uri, content);
-                return await response.Content.ReadAsStringAsync();
+                response = await Client.PostAsync(uri, content).ConfigureAwait(false);
+                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -139,7 +138,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             try
             {
                 BeforeGetOrPost(coolapkCookies, uri, request);
-                return await Client.GetStreamAsync(uri);
+                return await Client.GetStreamAsync(uri).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -152,7 +151,7 @@ namespace CoolapkUWP.OSSUploader.Helpers
             try
             {
                 BeforeGetOrPost(coolapkCookies, uri, request);
-                return await Client.GetStringAsync(uri);
+                return await Client.GetStringAsync(uri).ConfigureAwait(false);
             }
             catch (Exception)
             {
