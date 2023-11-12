@@ -79,6 +79,7 @@ namespace CoolapkUWP.OSSUploader
                 .Append(string.Format(_loader.GetString("OSArchitectureFormat"), RuntimeInformation.OSArchitecture));
             MessageDialog dialog = new MessageDialog(builder.ToString(), _loader.GetString("MessageDialogTitle"));
             _ = await dialog.ShowAsync();
+
             Exit();
         }
 
