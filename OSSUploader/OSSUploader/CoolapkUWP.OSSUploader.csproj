@@ -123,7 +123,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\ExceptionHandling.cs" />
-    <Compile Include="Common\TokenCreator.cs" />
     <Compile Include="Helpers\DataHelper.cs" />
     <Compile Include="Helpers\NetworkHelper.cs" />
     <Compile Include="Helpers\OSSUploadHelper.cs" />
@@ -134,7 +133,6 @@
     <Compile Include="Models\UploadFileInfo.cs" />
     <Compile Include="Models\UploadPicturePrepareResult.cs" />
     <Compile Include="Models\UploadPrepareInfo.cs" />
-    <Compile Include="Models\UserAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aliyun.OSS.SDK.NetCore">
-      <Version>2.13.0</Version>
+      <Version>2.14.1</Version>
     </PackageReference>
     <PackageReference Include="BCrypt.Net-Next">
       <Version>4.0.3</Version>

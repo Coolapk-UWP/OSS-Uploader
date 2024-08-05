@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CoolapkUWP.OSSUploader.Models
 {
@@ -6,6 +7,17 @@ namespace CoolapkUWP.OSSUploader.Models
     {
         public string Version { get; set; }
         public string VersionCode { get; set; }
+
+        public string MajorVersion
+        {
+            get
+            {
+                string result = Version.Split('.').FirstOrDefault();
+                return result == "1" ? "9" : result;
+            }
+        }
+
+        public APIVersion() : this("13.4.1", "2312121") { }
 
         public APIVersion(string version, string versionCode)
         {

@@ -8,14 +8,25 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace CoolapkUWP.OSSUploader.Helpers
 {
     public static class RequestHelper
     {
-        public static async Task<(bool isSucceed, JToken result)> PostDataAsync(Uri uri, HttpContent content = null, bool isBackground = false)
+        public static HttpCookieCollection GetCoolapkCookies(Uri uri)
         {
-            string json = await NetworkHelper.PostAsync(uri, content, NetworkHelper.GetCoolapkCookies(uri), isBackground).ConfigureAwait(false);
+            using (HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter())
+            {
+                HttpCookieManager cookieManager = filter.CookieManager;
+                return cookieManager.GetCookies(NetworkHelper.GetHost(uri));
+            }
+        }
+
+        public static async Task<(bool isSucceed, JToken result)> PostDataAsync(Uri uri, HttpContent content = null)
+        {
+            string json = await NetworkHelper.PostAsync(uri, content, GetCoolapkCookies(uri)).ConfigureAwait(false);
             if (string.IsNullOrEmpty(json)) { return (false, null); }
             JObject token;
             try { token = JObject.Parse(json); }

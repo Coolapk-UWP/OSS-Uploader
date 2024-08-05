@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 
@@ -10,53 +7,12 @@ namespace CoolapkUWP.OSSUploader.Helpers
 {
     public static partial class DataHelper
     {
-        public static string GetMD5(this string input)
-        {
-            // Create a new instance of the MD5CryptoServiceProvider object.
-            using (MD5 md5Hasher = MD5.Create())
-            {
-                // Convert the input string to a byte array and compute the hash.
-                byte[] data = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(input));
-                string results = BitConverter.ToString(data).ToLowerInvariant();
-                return results.Replace("-", "");
-            }
-        }
-
-        public static string GetBase64(this string input, bool isRaw = false)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(input);
-            string result = Convert.ToBase64String(bytes);
-            if (!isRaw) { result = result.Replace("=", ""); }
-            return result;
-        }
-
-        public static string Reverse(this string text)
-        {
-            char[] charArray = text.ToCharArray();
-            Array.Reverse(charArray);
-            return new string(charArray);
-        }
-
-        public static async Task<IBuffer> GetBufferAsync(this IRandomAccessStream randomStream)
-        {
-            using (Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(randomStream.GetInputStreamAt(0)))
-            {
-                return await stream.GetBufferAsync();
-            }
-        }
-
         public static async Task<byte[]> GetBytesAsync(this IRandomAccessStream randomStream)
         {
             using (Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(randomStream.GetInputStreamAt(0)))
             {
                 return await stream.GetBytesAsync();
             }
-        }
-
-        public static async Task<IBuffer> GetBufferAsync(this Stream stream)
-        {
-            byte[] bytes = stream != null ? await stream.GetBytesAsync() : Array.Empty<byte>();
-            return bytes.AsBuffer();
         }
 
         public static async Task<byte[]> GetBytesAsync(this Stream stream)

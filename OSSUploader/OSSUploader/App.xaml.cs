@@ -157,9 +157,14 @@ namespace CoolapkUWP.OSSUploader
                     NetworkHelper.SetLoginCookie(uid.ToString(), username.ToString(), token.ToString());
                 }
 
-                if (message.TryGetValue("TokenVersion", out object TokenVersion) && message.TryGetValue("UserAgent", out object UserAgent) && message.TryGetValue("APIVersion", out object APIVersion))
+                if (message.TryGetValue("DeviceCode", out object deviceCode) && message.TryGetValue("AppToken", out object appToken))
                 {
-                    NetworkHelper.SetRequestHeaders((TokenVersions)TokenVersion, JsonConvert.DeserializeObject<UserAgent>(UserAgent.ToString(), jSetting), JsonConvert.DeserializeObject<APIVersion>(APIVersion.ToString(), jSetting));
+                    NetworkHelper.SetRequestHeaders(deviceCode.ToString(), appToken.ToString());
+                }
+
+                if (message.TryGetValue("UserAgent", out object userAgent))
+                {
+                    NetworkHelper.SetRequestHeaders(userAgent.ToString());
                 }
 
                 if (message.TryGetValue("Images", out object images))
@@ -212,12 +217,6 @@ namespace CoolapkUWP.OSSUploader
                 return list;
             }
         }
-
-        private readonly JsonSerializerSettings jSetting = new JsonSerializerSettings()
-        {
-            NullValueHandling = NullValueHandling.Ignore,
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-        };
 
         private bool _isLoad = false;
         private bool _appServiceInitialized = false;
