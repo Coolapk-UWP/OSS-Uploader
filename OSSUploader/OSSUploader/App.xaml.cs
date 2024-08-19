@@ -100,7 +100,7 @@ namespace CoolapkUWP.OSSUploader
         private void Application_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
 
         /// <summary>
-        /// Should be called from OnActivated and OnLaunched
+        /// Should be called from OnActivated and OnLaunched.
         /// </summary>
         private void RegisterExceptionHandlingSynchronizationContext()
         {
@@ -112,7 +112,7 @@ namespace CoolapkUWP.OSSUploader
         private void SynchronizationContext_UnhandledException(object sender, Common.UnhandledExceptionEventArgs e) => e.Handled = true;
 
         /// <summary>
-        /// Called whenever the app service is activated
+        /// Called whenever the app service is activated.
         /// </summary>
         /// <param name="args"></param>
         protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
@@ -135,13 +135,13 @@ namespace CoolapkUWP.OSSUploader
         }
 
         /// <summary>
-        /// The handler for app service calls
+        /// The handler for app service calls.
         /// This extension provides the exponent function. Extensions can provide more
         /// than one function. You could send a "command" argument in args.Request.Message
         /// to identify the function to carry out.
         /// </summary>
-        /// <param name="sender">Contains details about the app connection</param>
-        /// <param name="args">Contains arguments for the app service and the deferral object</param>
+        /// <param name="sender">Contains details about the app connection.</param>
+        /// <param name="args">Contains arguments for the app service and the deferral object.</param>
         private async void OnAppServiceRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             // Get a deferral because we use an await-able API below (SendResponseAsync()) to respond to the message
@@ -186,14 +186,14 @@ namespace CoolapkUWP.OSSUploader
         }
 
         /// <summary>
-        /// Called if the system is going to cancel the app service because resources it needs to reclaim resources
+        /// Called if the system is going to cancel the app service because resources it needs to reclaim resources.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="reason"></param>
         private void OnAppServicesCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason) => _appServiceDeferral.Complete();
 
         /// <summary>
-        /// Called when the caller closes the connection to the app service
+        /// Called when the caller closes the connection to the app service.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
