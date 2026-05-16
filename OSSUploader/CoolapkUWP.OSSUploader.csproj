@@ -120,9 +120,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="App.cs" />
     <Compile Include="Common\ExceptionHandling.cs" />
     <Compile Include="Helpers\DataHelper.cs" />
     <Compile Include="Helpers\NetworkHelper.cs" />
@@ -134,6 +132,7 @@
     <Compile Include="Models\UploadFileInfo.cs" />
     <Compile Include="Models\UploadPicturePrepareResult.cs" />
     <Compile Include="Models\UploadPrepareInfo.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -194,12 +193,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aliyun.OSS.SDK.NetCore">

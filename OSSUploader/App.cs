@@ -12,19 +12,19 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Collections;
-using Windows.Foundation.Metadata;
 using Windows.System.Profile;
+using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
 
 namespace CoolapkUWP.OSSUploader
 {
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
-    internal sealed partial class App : Application
+    internal sealed partial class App : IFrameworkViewSource, IFrameworkView
     {
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -32,37 +32,26 @@ namespace CoolapkUWP.OSSUploader
         /// </summary>
         public App()
         {
-            InitializeComponent();
-            Suspending += OnSuspending;
-            UnhandledException += Application_UnhandledException;
-
-            if (ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.FocusVisualKind", "Reveal"))
-            {
-                FocusVisualKind = AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Xbox" ? FocusVisualKind.Reveal : FocusVisualKind.HighVisibility;
-            }
+            CoreApplication.Suspending += OnSuspending;
+            CoreApplication.BackgroundActivated += OnBackgroundActivated;
         }
 
-        /// <summary>
-        /// 在应用程序由最终用户正常启动时进行调用。
-        /// 将在启动应用程序以打开特定文件等情况下使用。
-        /// </summary>
-        /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        public IFrameworkView CreateView() => this;
+
+        public void Initialize(CoreApplicationView applicationView) => applicationView.Activated += OnApplicationViewActivated;
+
+        public void SetWindow(CoreWindow window) => _window = window;
+
+        public void Run()
         {
-            EnsureMessageDialog(e);
+            _window.Activate();
+            CoreWindow.GetForCurrentThread().Dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessUntilQuit);
         }
 
-        /// <summary>
-        /// 当应用程序被除正常启动以外的某种方式激活时调用。
-        /// </summary>
-        /// <param name="e">事件的事件数据。</param>
-        protected override void OnActivated(IActivatedEventArgs e)
-        {
-            EnsureMessageDialog(e);
-            base.OnActivated(e);
-        }
+        void IFrameworkView.Load(string entryPoint) { }
+        void IFrameworkView.Uninitialize() { }
 
-        private async void EnsureMessageDialog(IActivatedEventArgs e)
+        private async void OnApplicationViewActivated(CoreApplicationView sender, IActivatedEventArgs e)
         {
             if (!_isLoad)
             {
@@ -80,7 +69,7 @@ namespace CoolapkUWP.OSSUploader
             MessageDialog dialog = new MessageDialog(builder.ToString(), _loader.GetString("MessageDialogTitle"));
             _ = await dialog.ShowAsync();
 
-            Exit();
+            CoreApplication.Exit();
         }
 
         /// <summary>
@@ -96,8 +85,6 @@ namespace CoolapkUWP.OSSUploader
             //TODO: 保存应用程序状态并停止任何后台活动
             deferral.Complete();
         }
-
-        private void Application_UnhandledException(object sender, Windows.UI.Xaml.UnhandledExceptionEventArgs e) => e.Handled = true;
 
         /// <summary>
         /// Should be called from OnActivated and OnLaunched.
@@ -115,10 +102,8 @@ namespace CoolapkUWP.OSSUploader
         /// Called whenever the app service is activated.
         /// </summary>
         /// <param name="args"></param>
-        protected override void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        private void OnBackgroundActivated(object sender, BackgroundActivatedEventArgs args)
         {
-            base.OnBackgroundActivated(args);
-
             if (_appServiceInitialized == false) // Only need to setup the handlers once
             {
                 _appServiceInitialized = true;
@@ -218,6 +203,7 @@ namespace CoolapkUWP.OSSUploader
             }
         }
 
+        private CoreWindow _window;
         private bool _isLoad = false;
         private bool _appServiceInitialized = false;
         private AppServiceConnection _appServiceConnection;
