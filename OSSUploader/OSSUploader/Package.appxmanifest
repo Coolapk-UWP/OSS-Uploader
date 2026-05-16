@@ -10,13 +10,13 @@
 
   <Identity
     Name="18184wherewhere.CoolapkUWP.OSSUploader"
-    Publisher="CN=qq251"
+    Publisher="CN=2C3A37C0-35FC-4839-B08C-751C1C1AFBF5"
     Version="0.0.1.0" />
 
-  <mp:PhoneIdentity PhoneProductId="269d9af1-a439-4050-bad8-867af58daacc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="6eb50c02-0e6c-4d3c-bb1d-1bb564853095" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>CoolapkUWP.OSSUploader</DisplayName>
+    <DisplayName>OSS Uploader</DisplayName>
     <PublisherDisplayName>wherewhere</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
