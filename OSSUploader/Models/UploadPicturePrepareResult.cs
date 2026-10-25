@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoolapkUWP.OSSUploader.Models
 {
-    public class UploadPicturePrepareResult
+    public sealed class UploadPicturePrepareResult
     {
         [JsonProperty("fileInfo")]
         public IList<UploadFileInfo> FileInfo { get; set; }

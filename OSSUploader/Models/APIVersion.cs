@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace CoolapkUWP.OSSUploader.Models
 {
-    public class APIVersion
+    public sealed class APIVersion
     {
         public string Version { get; set; }
         public string VersionCode { get; set; }

@@ -24,7 +24,7 @@ namespace CoolapkUWP.OSSUploader
     /// <summary>
     /// 提供特定于应用程序的行为，以补充默认的应用程序类。
     /// </summary>
-    internal sealed partial class App : IFrameworkViewSource, IFrameworkView
+    public sealed partial class App : IFrameworkViewSource, IFrameworkView
     {
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -184,7 +184,7 @@ namespace CoolapkUWP.OSSUploader
         /// <param name="args"></param>
         private void AppServiceConnection_ServiceClosed(AppServiceConnection sender, AppServiceClosedEventArgs args) => _appServiceDeferral.Complete();
 
-        private class IgnoreIgnoredContractResolver : DefaultContractResolver
+        private sealed class IgnoreIgnoredContractResolver : DefaultContractResolver
         {
             protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
             {

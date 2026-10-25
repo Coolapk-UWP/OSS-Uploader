@@ -2,8 +2,8 @@
 
 namespace CoolapkUWP.OSSUploader
 {
-    public class Program
+    public sealed class Program
     {
-        private static void Main(string[] args) => CoreApplication.Run(new App());
+        private static void Main() => CoreApplication.Run(new App());
     }
 }

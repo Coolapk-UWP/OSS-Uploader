@@ -2,7 +2,7 @@
 
 namespace CoolapkUWP.OSSUploader.Models
 {
-    public class UploadPrepareInfo
+    public sealed class UploadPrepareInfo
     {
         [JsonProperty("accessKeySecret")]
         public string AccessKeySecret { get; set; }

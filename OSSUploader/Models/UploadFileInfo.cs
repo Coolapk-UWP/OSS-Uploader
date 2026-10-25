@@ -2,7 +2,7 @@
 
 namespace CoolapkUWP.OSSUploader.Models
 {
-    public class UploadFileInfo
+    public sealed class UploadFileInfo
     {
         [JsonProperty("name")]
         public string Name { get; set; }
